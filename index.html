@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Potentials Interactive Explorer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        darkBg: '#0f172a',
+                        cardDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 dark:bg-darkBg dark:text-slate-100 transition-colors duration-300 flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white dark:bg-cardDark border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between shrink-0 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/30">
+                ⚡
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">Magnetic Potentials Explorer</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Beginner-Friendly Scalar (V<sub>m</sub>) & Vector (<b>A</b>) Field Visualizer</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <!-- Creator Attribution -->
+            <div class="hidden md:flex flex-col text-right">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Dr Nitin Phadkule</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Govt College of Engineering, Chh. Sambhajinagar</span>
+            </div>
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-slate-600 dark:text-slate-300 flex items-center space-x-2 text-xs font-medium">
+                <span id="themeIcon">🌙</span>
+                <span class="hidden sm:inline" id="themeText">Dark Mode</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        
+        <!-- Sidebar Controls & Navigation -->
+        <aside class="w-full lg:w-[440px] bg-white dark:bg-cardDark border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0 overflow-y-auto z-10">
+            <!-- Tab Navigation Buttons -->
+            <div class="grid grid-cols-3 p-3 gap-2 bg-slate-100/70 dark:bg-slate-900/55 border-b border-slate-200 dark:border-slate-700">
+                <button onclick="switchTab('beginner')" id="tabBtn-beginner" class="py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-blue-600 text-white shadow-md shadow-blue-500/20">
+                    <span>💡</span>
+                    <span>Beginner 101</span>
+                </button>
+                <button onclick="switchTab('wire')" id="tabBtn-wire" class="py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <span>📍</span>
+                    <span>Straight Wire (<b>A</b>)</span>
+                </button>
+                <button onclick="switchTab('practical')" id="tabBtn-practical" class="py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <span>🏭</span>
+                    <span>Practical FEA</span>
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="p-5 flex-1 flex flex-col space-y-6">
+                
+                <!-- TAB 0: BEGINNER 101 GUIDE -->
+                <div id="tabContent-beginner" class="space-y-5">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>👶 Beginner 101: No-Jargon Guide</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                            Electromagnetism can look scary. Let's understand magnetic potentials using everyday things you can touch and see!
+                        </p>
+                    </div>
+
+                    <!-- Analogy Card 1: Scalar Potential -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800/80 p-4 rounded-xl border border-blue-200 dark:border-slate-700 space-y-2.5 shadow-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">⛰️</span>
+                            <h3 class="text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">1. Scalar Potential (V<sub>m</sub>) = Hill Elevation</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Imagine hiking in the mountains. At every single spot on the ground, your GPS gives you <strong>one single number</strong>: your height above sea level (e.g., 500 meters). That height is a <strong>scalar</strong>.
+                        </p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Water naturally rolls downhill away from high peaks. In magnets, <b>V<sub>m</sub></b> is just like that altitude map! The magnetic force (<b>H</b>) simply rolls downhill from high potential to low potential: <strong>H = -&nabla;V<sub>m</sub></strong>.
+                        </p>
+                    </div>
+
+                    <!-- Analogy Card 2: Vector Potential -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800/80 p-4 rounded-xl border border-amber-200 dark:border-slate-700 space-y-2.5 shadow-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">🌊</span>
+                            <h3 class="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">2. Vector Potential (<b>A</b>) = Water River Flow</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Now imagine a winding river. Instead of just a single height number, every point in the water has a <strong>little arrow</strong> telling you the speed and direction the water is flowing. That arrow map is a <strong>vector</strong> (<b>A</b>).
+                        </p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            If a wire pushes current straight up, the vector potential (<b>A</b>) creates an upward flow blueprint. When you take a mathematical "twist" (curl) of those flow arrows, it creates swirling whirlpools—which are your magnetic field (<b>B = &nabla; &times; A</b>)!
+                        </p>
+                    </div>
+
+                    <!-- Summary Cheat Sheet -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Cheat Sheet Summary</h3>
+                        <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li><strong>V<sub>m</sub> (Scalar):</strong> Used in quiet regions with <em>zero current</em> (like permanent magnets or air gaps).</li>
+                            <li><strong>A (Vector):</strong> Used when electricity is actively flowing through wires (<b>J &ne; 0</b>).</li>
+                            <li><strong>Why use them?</strong> They act as math shortcuts so computers can solve massive motor and transformer designs in seconds!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB 1 CONTROLS: Straight Wire -->
+                <div id="tabContent-wire" class="space-y-5 hidden">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>1. Infinitely Long Wire Calculator</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                            Adjust wire current (<i>I</i>) and material permeability (&mu;<sub>r</sub>) to see how vector potential (<b>A</b>) changes in real-time.
+                        </p>
+                    </div>
+
+                    <!-- Interactive Slider: Current -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="text-slate-700 dark:text-slate-300">Conductor Current (<i>I</i>)</span>
+                            <span id="currentVal" class="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">10.0 A</span>
+                        </div>
+                        <input type="range" id="sliderCurrent" min="1" max="50" step="0.5" value="10" 
+                            class="w-full accent-blue-600 cursor-pointer" oninput="updateWireSimulation()">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span>1 A (Low)</span>
+                            <span>50 A (High)</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Slider: Permeability -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="text-slate-700 dark:text-slate-300">Relative Permeability (&mu;<sub>r</sub>)</span>
+                            <span id="muVal" class="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">1.0</span>
+                        </div>
+                        <input type="range" id="sliderMu" min="1" max="10" step="0.5" value="1" 
+                            class="w-full accent-blue-600 cursor-pointer" oninput="updateWireSimulation()">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span>Air (&mu;<sub>r</sub>=1)</span>
+                            <span>Iron Core (&mu;<sub>r</sub>=10)</span>
+                        </div>
+                    </div>
+
+                    <!-- Live Calculated Readouts -->
+                    <div class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 p-4 rounded-xl space-y-2">
+                        <h3 class="text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">Live Field Calculations</h3>
+                        <div class="space-y-1.5 text-xs font-mono">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600 dark:text-slate-400">Vector Potential (A<sub>z</sub>):</span>
+                                <span id="formulaA" class="font-semibold text-blue-700 dark:text-blue-300">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600 dark:text-slate-400">Magnetic Flux Density (B<sub>φ</sub>):</span>
+                                <span id="formulaB" class="font-semibold text-blue-700 dark:text-blue-300">-</span>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-blue-800/80 dark:text-blue-300/80 pt-1 border-t border-blue-200/60 dark:border-blue-900/40">
+                            💡 <b>A</b> flows straight up along the wire (ẑ), while <b>B</b> circles around it like water in a whirlpool via <b>B = &nabla; &times; A</b>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TAB 2 CONTROLS: Practical FEA View -->
+                <div id="tabContent-practical" class="space-y-5 hidden">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>2. Industrial FEA Applications</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                            Explore how real engineers use both potentials in transformers and electric motors.
+                        </p>
+                    </div>
+
+                    <!-- Sub-Application Selector Buttons -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="switchPracticalMode('transformer')" id="btnTransformer" 
+                            class="p-3 rounded-xl border border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm">
+                            <span>🔌 Transformer</span>
+                            <span class="text-[10px] font-normal text-slate-500 dark:text-slate-400">&nabla;<sup>2</sup><b>A</b> = -&mu;<b>J</b></span>
+                        </button>
+                        <button onclick="switchPracticalMode('motor')" id="btnMotor" 
+                            class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm hover:border-slate-300">
+                            <span>⚙️ Electric Motor</span>
+                            <span class="text-[10px] font-normal text-slate-500 dark:text-slate-400">Scalar (V<sub>m</sub>) + Vector (<b>A</b>)</span>
+                        </button>
+                    </div>
+
+                    <!-- Detailed Observation Card -->
+                    <div id="practicalExplanationCard" class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h3 id="pracTitle" class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Transformer Core Analysis</h3>
+                        <div id="pracDesc" class="text-xs text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed">
+                            <p><strong>What to Observe:</strong> Heavy copper primary windings carry alternating current density (<b>J &ne; 0</b>). The resulting magnetic flux lines loop smoothly through the high-permeability laminated iron core.</p>
+                            <p><strong>How <b>A</b> Changes:</strong> As frequency or excitation increases, the vector potential magnitude <b>A</b> scales proportionally. Contour lines pack tighter around core limbs, indicating higher induced voltage in the secondary winding via Stokes' theorem (&Phi; = &oint; <b>A</b> &middot; d<b>l</b>).</p>
+                        </div>
+                        <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                            <span class="text-slate-500">Governing Equation:</span>
+                            <span id="pracEquation" class="font-mono font-bold text-blue-600 dark:text-blue-400">&nabla;<sup>2</sup><b>A</b> = -&mu;<b>J</b></span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Slider -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span id="sliderLabel" class="text-slate-700 dark:text-slate-300">Excitation Frequency</span>
+                            <span id="pracSliderVal" class="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">50 Hz</span>
+                        </div>
+                        <input type="range" id="sliderPractical" min="10" max="400" step="10" value="50" 
+                            class="w-full accent-blue-600 cursor-pointer" oninput="updatePracticalSimulation()">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span id="sliderMinLabel">10 Hz</span>
+                            <span id="sliderMaxLabel">400 Hz</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Creator Attribution -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-700 text-center text-[11px] text-slate-500 space-y-0.5">
+                <p class="font-semibold text-slate-700 dark:text-slate-300">Created by Dr Nitin Phadkule</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Govt College of Engineering, Chh. Sambhajinagar</p>
+            </div>
+        </aside>
+
+        <!-- Canvas & Visualization Area -->
+        <section class="flex-1 flex flex-col bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
+            
+            <!-- Canvas Toolbar overlay -->
+            <div class="absolute top-4 left-4 right-4 z-10 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+                <!-- Status Badge -->
+                <div class="bg-white/90 dark:bg-cardDark/90 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md pointer-events-auto flex items-center space-x-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="canvasStatusText" class="text-xs font-bold">Beginner Guide: Scalar vs Vector Potentials</span>
+                </div>
+
+                <!-- Canvas Control Options -->
+                <div class="bg-white/90 dark:bg-cardDark/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md pointer-events-auto flex items-center space-x-2">
+                    <button onclick="toggleFieldLines()" id="btnToggleField" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow transition hover:bg-blue-700">
+                        Toggle Field Lines
+                    </button>
+                    <button onclick="resetCanvasView()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                        Reset View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Interactive Canvas -->
+            <div class="flex-1 w-full h-full relative">
+                <canvas id="simCanvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Bottom Explanation Overlay / Legend -->
+            <div class="bg-white/90 dark:bg-cardDark/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shrink-0 text-xs shadow-lg">
+                <div class="flex items-center space-x-6" id="canvasLegend">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 rounded bg-blue-500/20 border border-blue-500 flex items-center justify-center font-bold text-[10px] text-blue-600">Vm</div>
+                        <span class="text-slate-600 dark:text-slate-300 font-medium">Scalar Potential (Hill Elevation)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 rounded bg-amber-500/20 border border-amber-500 flex items-center justify-center font-bold text-[10px] text-amber-600">A</div>
+                        <span class="text-slate-600 dark:text-slate-300 font-medium">Vector Potential (River Current)</span>
+                    </div>
+                </div>
+                <div class="text-slate-500 dark:text-slate-400 text-[11px] italic">
+                    💡 Use sidebar controls and tabs to explore field distributions.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Simulation JavaScript -->
+    <script>
+        // State Management
+        let currentTab = 'beginner'; 
+        let practicalMode = 'transformer'; 
+        let currentI = 10.0;
+        let currentMu = 1.0;
+        let pracFreq = 50;
+        let showFieldLines = true;
+        let animTime = 0;
+
+        // Theme Toggle Setup
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const htmlDoc = document.documentElement;
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            htmlDoc.classList.add('dark');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light Mode';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlDoc.classList.toggle('dark');
+            if (htmlDoc.classList.contains('dark')) {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            currentTab = tab;
+            const btnBeginner = document.getElementById('tabBtn-beginner');
+            const btnWire = document.getElementById('tabBtn-wire');
+            const btnPractical = document.getElementById('tabBtn-practical');
+            
+            const contentBeginner = document.getElementById('tabContent-beginner');
+            const contentWire = document.getElementById('tabContent-wire');
+            const contentPractical = document.getElementById('tabContent-practical');
+            const statusText = document.getElementById('canvasStatusText');
+
+            [btnBeginner, btnWire, btnPractical].forEach(b => {
+                b.className = "py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700";
+            });
+
+            contentBeginner.classList.add('hidden');
+            contentWire.classList.add('hidden');
+            contentPractical.classList.add('hidden');
+
+            if (tab === 'beginner') {
+                btnBeginner.className = "py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-blue-600 text-white shadow-md shadow-blue-500/20";
+                contentBeginner.classList.remove('hidden');
+                statusText.textContent = "Beginner Guide: Scalar vs Vector Potentials (Analogies)";
+            } else if (tab === 'wire') {
+                btnWire.className = "py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-blue-600 text-white shadow-md shadow-blue-500/20";
+                contentWire.classList.remove('hidden');
+                statusText.textContent = "Simulating Infinitely Long Wire (Vector Potential A)";
+            } else {
+                btnPractical.className = "py-2.5 px-2 rounded-lg text-xs font-semibold transition flex flex-col items-center justify-center space-y-0.5 bg-blue-600 text-white shadow-md shadow-blue-500/20";
+                contentPractical.classList.remove('hidden');
+                statusText.textContent = practicalMode === 'transformer' ? "Industrial FEA: Transformer Core (Vector Potential A)" : "Industrial FEA: Electric Motor (Scalar Vm & Vector A)";
+            }
+            updateFormulas();
+        }
+
+        // Practical Sub-Mode Switching
+        function switchPracticalMode(mode) {
+            practicalMode = mode;
+            const btnT = document.getElementById('btnTransformer');
+            const btnM = document.getElementById('btnMotor');
+            const pracTitle = document.getElementById('pracTitle');
+            const pracDesc = document.getElementById('pracDesc');
+            const sliderLabel = document.getElementById('sliderLabel');
+            const sliderMinLabel = document.getElementById('sliderMinLabel');
+            const sliderMaxLabel = document.getElementById('sliderMaxLabel');
+            const pracEquation = document.getElementById('pracEquation');
+            const sliderPractical = document.getElementById('sliderPractical');
+            const statusText = document.getElementById('canvasStatusText');
+
+            if (mode === 'transformer') {
+                btnT.className = "p-3 rounded-xl border border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm";
+                btnM.className = "p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm hover:border-slate-300";
+                
+                pracTitle.textContent = "Transformer Core Analysis";
+                pracDesc.innerHTML = `
+                    <p><strong>What to Observe:</strong> Heavy copper primary windings carry alternating current density (<b>J &ne; 0</b>). The resulting magnetic flux lines loop smoothly through the high-permeability laminated iron core.</p>
+                    <p><strong>How <b>A</b> Changes:</strong> As frequency or excitation increases, the vector potential magnitude <b>A</b> scales proportionally. Contour lines pack tighter around core limbs, indicating higher induced voltage in the secondary winding via Stokes' theorem (&Phi; = &oint; <b>A</b> &middot; d<b>l</b>).</p>
+                `;
+                sliderLabel.textContent = "Excitation Frequency";
+                sliderMinLabel.textContent = "10 Hz";
+                sliderMaxLabel.textContent = "400 Hz";
+                sliderPractical.min = 10;
+                sliderPractical.max = 400;
+                sliderPractical.step = 10;
+                sliderPractical.value = 50;
+                pracFreq = 50;
+                pracEquation.innerHTML = "&nabla;<sup>2</sup><b>A</b> = -&mu;<b>J</b>";
+                statusText.textContent = "Industrial FEA: Transformer Core (Vector Potential A)";
+            } else {
+                btnM.className = "p-3 rounded-xl border border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm";
+                btnT.className = "p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition text-left flex flex-col space-y-1 shadow-sm hover:border-slate-300";
+                
+                pracTitle.textContent = "Electric Motor Air Gap Analysis";
+                pracDesc.innerHTML = `
+                    <p><strong>What to Observe:</strong> The rotor houses permanent magnets (<b>J = 0</b>, modeled cleanly using <strong>Scalar Potential V<sub>m</sub></strong>), while the stator slots carry active currents (<b>J &ne; 0</b>, solved using <strong>Vector Potential A</strong>).</p>
+                    <p><strong>How Potentials Interact:</strong> As the rotor spins, software couples <b>V<sub>m</sub></b> and <b>A</b> across the air gap boundary to compute instantaneous torque ripples and cogging forces without tracking every moving electron.</p>
+                `;
+                sliderLabel.textContent = "Motor RPM / Speed";
+                sliderMinLabel.textContent = "300 RPM";
+                sliderMaxLabel.textContent = "3600 RPM";
+                sliderPractical.min = 10;
+                sliderPractical.max = 120;
+                sliderPractical.step = 5;
+                sliderPractical.value = 30;
+                pracFreq = 30;
+                pracEquation.innerHTML = "&nabla;<sup>2</sup><i>V<sub>m</sub></i> = 0 (Air Gap) &amp; &nabla;<sup>2</sup><b>A</b> = -&mu;<b>J</b> (Slots)";
+                statusText.textContent = "Industrial FEA: Electric Motor (Scalar Vm & Vector A)";
+            }
+            updatePracticalSimulation();
+        }
+
+        function updateWireSimulation() {
+            currentI = parseFloat(document.getElementById('sliderCurrent').value);
+            currentMu = parseFloat(document.getElementById('sliderMu').value);
+            document.getElementById('currentVal').textContent = currentI.toFixed(1) + ' A';
+            document.getElementById('muVal').textContent = currentMu.toFixed(1);
+            updateFormulas();
+        }
+
+        function updatePracticalSimulation() {
+            pracFreq = parseFloat(document.getElementById('sliderPractical').value);
+            if (practicalMode === 'transformer') {
+                document.getElementById('pracSliderVal').textContent = pracFreq + ' Hz';
+            } else {
+                document.getElementById('pracSliderVal').textContent = (pracFreq * 30) + ' RPM';
+            }
+        }
+
+        function updateFormulas() {
+            const mu0 = 4 * Math.PI * 1e-7;
+            const mu = mu0 * currentMu;
+            const rho = 0.1; 
+            const A_val = - (mu * currentI / (2 * Math.PI)) * Math.log(rho);
+            const B_val = (mu * currentI) / (2 * Math.PI * rho);
+
+            document.getElementById('formulaA').textContent = `A_z ≈ ${(A_val * 1e6).toFixed(2)} µWb/m`;
+            document.getElementById('formulaB').textContent = `B_φ ≈ ${(B_val * 1e3).toFixed(2)} mT`;
+        }
+
+        function toggleFieldLines() {
+            showFieldLines = !showFieldLines;
+            const btn = document.getElementById('btnToggleField');
+            btn.className = showFieldLines ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow transition hover:bg-blue-700" : "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 transition";
+        }
+
+        function resetCanvasView() {
+            animTime = 0;
+        }
+
+        // Canvas Setup & Render Loop (No Hover Logic)
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        updateFormulas();
+
+        function renderLoop() {
+            animTime += 0.02;
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+
+            ctx.clearRect(0, 0, width, height);
+            const isDark = htmlDoc.classList.contains('dark');
+
+            if (currentTab === 'beginner') {
+                drawBeginnerAnalogy(width, height, isDark);
+            } else if (currentTab === 'wire') {
+                drawWireSimulation(width, height, isDark);
+            } else {
+                if (practicalMode === 'transformer') {
+                    drawTransformerSimulation(width, height, isDark);
+                } else {
+                    drawMotorSimulation(width, height, isDark);
+                }
+            }
+
+            requestAnimationFrame(renderLoop);
+        }
+
+        // --- DRAWING 0: BEGINNER ANALOGY ---
+        function drawBeginnerAnalogy(width, height, isDark) {
+            const cx = width / 2;
+            const cy = height / 2;
+            const boxWidth = Math.min(340, width * 0.42);
+            const boxHeight = 240;
+
+            const leftX = cx - boxWidth - 20;
+            const topY = cy - boxHeight / 2 - 20;
+
+            ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+            ctx.strokeStyle = isDark ? '#334155' : '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(leftX, topY, boxWidth, boxHeight, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+            ctx.font = 'bold 13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Scalar Potential Vₘ (Hill Elevation)", leftX + boxWidth / 2, topY + 30);
+
+            const mX = leftX + boxWidth / 2;
+            const mY = topY + 130;
+            ctx.beginPath();
+            ctx.moveTo(mX - 80, mY + 60);
+            ctx.lineTo(mX, mY - 40);
+            ctx.lineTo(mX + 80, mY + 60);
+            ctx.fillStyle = isDark ? '#3b82f6' : '#93c5fd';
+            ctx.fill();
+
+            const ballOffset = Math.sin(animTime * 2) * 35;
+            ctx.beginPath();
+            ctx.arc(mX + ballOffset, mY + 20 + Math.abs(ballOffset)*0.5, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+
+            ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText("H rolls downhill: H = -∇Vₘ", mX, topY + boxHeight - 20);
+
+            const rightX = cx + 20;
+
+            ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+            ctx.strokeStyle = isDark ? '#334155' : '#e2e8f0';
+            ctx.beginPath();
+            ctx.roundRect(rightX, topY, boxWidth, boxHeight, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+            ctx.font = 'bold 13px Inter, sans-serif';
+            ctx.fillText("Vector Potential A (River Flow)", rightX + boxWidth / 2, topY + 30);
+
+            const rX = rightX + boxWidth / 2;
+            const rY = topY + 120;
+            for (let i = -2; i <= 2; i++) {
+                const ay = rY + i * 25;
+                const shift = (animTime * 20 + i * 15) % 60 - 30;
+                drawArrowHead(rX + shift, ay, 0, '#38bdf8');
+            }
+
+            ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText("Twist river arrows = Magnetic Field B", rX, topY + boxHeight - 20);
+        }
+
+        // --- DRAWING 1: STRAIGHT WIRE SIMULATION ---
+        function drawWireSimulation(width, height, isDark) {
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const maxRadius = Math.max(width, height) * 0.6;
+            const numContours = 14;
+
+            for (let i = numContours; i >= 1; i--) {
+                const r = (i / numContours) * maxRadius;
+                const alpha = Math.max(0.05, 0.4 - (i / numContours) * 0.3);
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.strokeStyle = isDark ? `rgba(59, 130, 246, ${alpha})` : `rgba(37, 99, 235, ${alpha})`;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                if (i % 3 === 0) {
+                    ctx.fillStyle = isDark ? '#93c5fd' : '#1d4ed8';
+                    ctx.font = '10px Inter, sans-serif';
+                    ctx.fillText(`A = -${(i * 1.5 * (currentI/10)).toFixed(1)} µWb`, centerX + r + 5, centerY);
+                }
+            }
+
+            if (showFieldLines) {
+                const numStreams = 8;
+                for (let s = 1; s <= numStreams; s++) {
+                    const rStream = (s / numStreams) * (maxRadius * 0.8) + Math.sin(animTime + s) * 2;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, rStream, 0, Math.PI * 2);
+                    ctx.strokeStyle = isDark ? 'rgba(245, 158, 11, 0.35)' : 'rgba(217, 119, 6, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    const angle = animTime * 0.5 + (s * Math.PI / 4);
+                    const ax = centerX + rStream * Math.cos(angle);
+                    const ay = centerY + rStream * Math.sin(angle);
+                    drawArrowHead(ax, ay, angle + Math.PI/2, isDark ? '#fbbf24' : '#d97706');
+                }
+            }
+
+            const wireRadius = 24;
+            const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, wireRadius * 2);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, wireRadius * 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, wireRadius, 0, Math.PI * 2);
+            ctx.fillStyle = isDark ? '#1e40af' : '#2563eb';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#60a5fa';
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`I (${currentI}A)`, centerX, centerY);
+        }
+
+        // --- DRAWING 2: TRANSFORMER FEA SIMULATION ---
+        function drawTransformerSimulation(width, height, isDark) {
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const coreWidth = 260;
+            const coreHeight = 180;
+            const x = centerX - coreWidth / 2;
+            const y = centerY - coreHeight / 2;
+
+            ctx.fillStyle = isDark ? '#334155' : '#cbd5e1';
+            ctx.fillRect(x, y, coreWidth, coreHeight);
+            
+            ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+            ctx.fillRect(x + 50, y + 40, coreWidth - 100, coreHeight - 80);
+
+            const coilWidth = 45;
+            const coilHeight = 130;
+            
+            ctx.fillStyle = '#d97706';
+            ctx.fillRect(x + 15, y + 25, coilWidth, coilHeight);
+            ctx.fillRect(x + coreWidth - 60, y + 25, coilWidth, coilHeight);
+
+            if (showFieldLines) {
+                ctx.lineWidth = 2;
+                const fluxLoops = 6;
+                for (let i = 1; i <= fluxLoops; i++) {
+                    const inset = i * 8;
+                    ctx.beginPath();
+                    ctx.roundRect(x + 25 + inset, y + 20 + inset, coreWidth - 50 - (inset*2), coreHeight - 40 - (inset*2), 10);
+                    const alpha = Math.sin(animTime * (pracFreq/20) + i * 0.5) * 0.3 + 0.5;
+                    ctx.strokeStyle = isDark ? `rgba(59, 130, 246, ${alpha})` : `rgba(37, 99, 235, ${alpha})`;
+                    ctx.stroke();
+                }
+            }
+
+            ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Primary Winding (J ≠ 0)", x + 38, y - 10);
+            ctx.fillText("Secondary Winding", x + coreWidth - 38, y - 10);
+            ctx.fillText("Laminated Iron Core (μ) — Freq: " + pracFreq + " Hz", centerX, y + coreHeight + 25);
+        }
+
+        // --- DRAWING 3: ELECTRIC MOTOR SIMULATION ---
+        function drawMotorSimulation(width, height, isDark) {
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const statorRadius = 130;
+            const rotorRadius = 85;
+
+            // Stator Frame
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, statorRadius, 0, Math.PI * 2);
+            ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+            ctx.stroke();
+
+            // Stator Slot Windings
+            const numSlots = 12;
+            for (let i = 0; i < numSlots; i++) {
+                const angle = (i / numSlots) * Math.PI * 2;
+                const sx = centerX + (statorRadius - 20) * Math.cos(angle);
+                const sy = centerY + (statorRadius - 20) * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.arc(sx, sy, 10, 0, Math.PI * 2);
+                ctx.fillStyle = i % 2 === 0 ? '#2563eb' : '#dc2626';
+                ctx.fill();
+            }
+
+            // Air gap ring
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, rotorRadius + 10, 0, Math.PI * 2);
+            ctx.strokeStyle = '#38bdf8';
+            ctx.setLineDash([3, 3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // ROTOR (WITH N/S LABELS ROTATING TOGETHER AS SINGLE UNITS)
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(animTime * (pracFreq / 30));
+
+            // South Pole Half (Blue)
+            ctx.beginPath();
+            ctx.arc(0, 0, rotorRadius, -Math.PI/2, Math.PI/2);
+            ctx.lineTo(0, 0);
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.45)';
+            ctx.fill();
+
+            // North Pole Half (Red)
+            ctx.beginPath();
+            ctx.arc(0, 0, rotorRadius, Math.PI/2, -Math.PI/2);
+            ctx.lineTo(0, 0);
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+            ctx.fill();
+
+            // Rotor Border Outline
+            ctx.beginPath();
+            ctx.arc(0, 0, rotorRadius, 0, Math.PI * 2);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#334155';
+            ctx.stroke();
+
+            // TEXT LABELS RENDERED INSIDE ROTOR COORDINATES SO THEY ROTATE WITH THEIR HEMISPHERES
+            ctx.font = 'bold 13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // North Label (Centered inside Red North hemisphere)
+            ctx.fillStyle = '#ef4444';
+            ctx.fillText("N (North)", 0, -38);
+
+            // South Label (Centered inside Blue South hemisphere)
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillText("S (South)", 0, 38);
+
+            ctx.restore();
+
+            // Outer Caption
+            ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Air Gap (Solved via Scalar Potential Vₘ) — Speed: " + (pracFreq * 30) + " RPM", centerX, centerY - statorRadius - 20);
+        }
+
+        function drawArrowHead(x, y, angle, color) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-6, -4);
+            ctx.lineTo(-6, 4);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        window.onload = function() {
+            renderLoop();
+        };
+    </script>
+</body>
+</html>
